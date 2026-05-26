@@ -18,7 +18,7 @@ print("CLIENT KEY :", CLIENT_KEY)
 
 snap = midtransclient.Snap(
 
-    is_production=False,
+    is_production=True,
 
     server_key=SERVER_KEY.strip(),
 
