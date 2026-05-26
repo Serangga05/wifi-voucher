@@ -134,7 +134,7 @@ def buy_voucher(package_id):
         transaction
     )
 
-    transaction_id = f"ORDER-{uuid.uuid4()}"
+    
 
     # =========================
     # MIDTRANS
