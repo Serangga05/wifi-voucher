@@ -19,6 +19,7 @@ from datetime import (
 from utils.midtrans import snap
 
 import os
+import uuid
 
 
 from database import (
@@ -112,7 +113,11 @@ def buy_voucher(package_id):
     })
 
     # buat transaksi
+    transaction_id = f"ORDER-{uuid.uuid4()}"
+
     transaction = {
+
+        "order_id": transaction_id,
 
         "user_id": session['user_id'],
 
@@ -129,7 +134,7 @@ def buy_voucher(package_id):
         transaction
     )
 
-    transaction_id = str(result.inserted_id)
+    transaction_id = f"ORDER-{uuid.uuid4()}"
 
     # =========================
     # MIDTRANS
@@ -352,8 +357,8 @@ def midtrans_callback():
 
         transaction = transactions_collection.find_one({
 
-            "_id": ObjectId(order_id)
-        })
+    "order_id": order_id
+})
 
         if not transaction:
 
@@ -413,7 +418,7 @@ def midtrans_callback():
         # update transaksi
         transactions_collection.update_one(
 
-            {"_id": ObjectId(order_id)},
+    {"order_id": order_id},
 
             {
                 "$set": {
