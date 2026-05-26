@@ -463,48 +463,36 @@
 
 {% else %}
 
-<div class="empty-voucher-wrapper">
+<div class="dashboard-card text-center">
 
-    <div class="empty-voucher-card">
+    <div class="empty-icon">
 
-        <div class="empty-icon">
-
-            <i class="fa-solid fa-spinner fa-spin"></i>
-
-        </div>
-
-        <h2 class="empty-title">
-
-            Sedang Mengecek Voucher...
-
-        </h2>
-
-        <p class="empty-subtitle">
-
-            Pembayaran Anda sedang diproses.
-            Voucher akan muncul otomatis.
-
-        </p>
-
-        <div class="loading-bar">
-
-            <div class="loading-fill"></div>
-
-        </div>
+        <i class="bi bi-wifi-off"></i>
 
     </div>
 
+    <h2 class="empty-title">
+
+        Tidak Ada Voucher Aktif
+
+    </h2>
+
+    <p class="empty-text">
+
+        Anda belum memiliki voucher aktif.
+        Silakan beli voucher hotspot terlebih dahulu.
+
+    </p>
+
+    <a href="/"
+       class="btn btn-primary btn-lg mt-4">
+
+        <i class="bi bi-cart-fill"></i>
+        Beli Voucher
+
+    </a>
+
 </div>
-
-<script>
-
-setTimeout(function(){
-
-    window.location.reload();
-
-}, 2000);
-
-</script>
 
 {% endif %}
 
