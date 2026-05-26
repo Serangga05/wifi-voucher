@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Voucher</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        *{
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+
+            background:
+            linear-gradient(
+                rgba(255,255,255,0.88),
+                rgba(255,255,255,0.88)
+            ),
+
+            url('https://images.unsplash.com/photo-1520869562399-e772f042f422?q=80&w=1920&auto=format&fit=crop');
+
+            background-size:cover;
+            background-position:center;
+            background-attachment:fixed;
+
+            min-height:100vh;
+        }
+
+        .page-wrapper{
+
+            padding-top:70px;
+            padding-bottom:70px;
+        }
+
+        .page-title{
+
+            font-size:52px;
+
+            font-weight:700;
+
+            color:#111827;
+        }
+
+        .edit-card{
+
+            background:rgba(255,255,255,0.88);
+
+            backdrop-filter:blur(12px);
+
+            border-radius:30px;
+
+            padding:45px;
+
+            border:
+            1px solid rgba(255,255,255,0.4);
+
+            box-shadow:
+            0 20px 60px rgba(0,0,0,0.12);
+
+            animation:
+            fadeUp 0.5s ease;
+        }
+
+        @keyframes fadeUp{
+
+            from{
+
+                opacity:0;
+                transform:translateY(30px);
+            }
+
+            to{
+
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+        .form-control,
+        .form-select{
+
+            height:58px;
+
+            border-radius:18px;
+
+            border:none;
+
+            background:rgba(255,255,255,0.95);
+
+            box-shadow:
+            0 4px 15px rgba(0,0,0,0.05);
+
+            padding-left:18px;
+
+            font-size:16px;
+        }
+
+        .form-control:focus,
+        .form-select:focus{
+
+            box-shadow:
+            0 0 0 4px rgba(37,99,235,0.15);
+
+            border:none;
+        }
+
+        .btn-save{
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            border:none;
+
+            height:58px;
+
+            border-radius:18px;
+
+            color:white;
+
+            font-weight:600;
+
+            font-size:17px;
+
+            transition:0.3s;
+        }
+
+        .btn-save:hover{
+
+            transform:translateY(-3px);
+
+            box-shadow:
+            0 15px 30px rgba(37,99,235,0.25);
+
+            color:white;
+        }
+
+        .btn-back{
+
+            background:#6b7280;
+
+            border:none;
+
+            color:white;
+
+            padding:12px 22px;
+
+            border-radius:14px;
+
+            font-weight:600;
+
+            transition:0.3s;
+        }
+
+        .btn-back:hover{
+
+            background:#4b5563;
+
+            transform:translateY(-2px);
+
+            color:white;
+        }
+
+        .label-title{
+
+            font-weight:600;
+
+            margin-bottom:10px;
+
+            color:#374151;
+        }
+
+        .icon-title{
+
+            color:#2563eb;
+        }
+
+        .loading-spinner{
+
+            display:none;
+
+            width:22px;
+            height:22px;
+
+            border:3px solid rgba(255,255,255,0.4);
+
+            border-top:3px solid white;
+
+            border-radius:50%;
+
+            animation:
+            spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+
+            100%{
+                transform:rotate(360deg);
+            }
+        }
+
+        .copy-btn{
+
+            position:absolute;
+
+            right:15px;
+            top:50%;
+
+            transform:translateY(-50%);
+
+            border:none;
+
+            background:none;
+
+            color:#6b7280;
+
+            font-size:18px;
+
+            cursor:pointer;
+        }
+
+        .password-wrapper{
+
+            position:relative;
+        }
+
+        @media(max-width:768px){
+
+            .page-title{
+
+                font-size:38px;
+            }
+
+            .edit-card{
+
+                padding:28px;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container page-wrapper">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+
+        <h1 class="page-title">
+
+            <i class="bi bi-ticket-perforated-fill icon-title"></i>
+            Edit Voucher
+
+        </h1>
+
+        <a href="/admin/add-voucher"
+           class="btn btn-back">
+
+            <i class="bi bi-arrow-left"></i>
+            Kembali
+
+        </a>
+
+    </div>
+
+    <!-- CARD -->
+    <div class="edit-card">
+
+        <form method="POST"
+              id="editForm">
+
+            <!-- LOKASI -->
+            <div class="mb-4">
+
+                <label class="label-title">
+
+                    Lokasi
+
+                </label>
+
+                <select
+                    name="location_id"
+                    class="form-select"
+                    required
+                >
+
+                    {% for location in locations %}
+
+                    <option
+                        value="{{ location._id }}"
+
+                        {% if voucher.location_id == location._id|string %}
+
+                            selected
+
+                        {% endif %}
+                    >
+
+                        {{ location.name }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <!-- PACKAGE -->
+            <div class="mb-4">
+
+                <label class="label-title">
+
+                    Package
+
+                </label>
+
+                <select
+                    name="package_id"
+                    class="form-select"
+                    required
+                >
+
+                    {% for package in packages %}
+
+                    <option
+                        value="{{ package._id }}"
+
+                        {% if voucher.package_id == package._id|string %}
+
+                            selected
+
+                        {% endif %}
+                    >
+
+                        {{ package.name }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <!-- USERNAME -->
+            <div class="mb-4">
+
+                <label class="label-title">
+
+                    Username Voucher
+
+                </label>
+
+                <input
+                    type="text"
+                    name="username"
+                    value="{{ voucher.username }}"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+            <!-- PASSWORD -->
+<div class="mb-5">
+
+    <label class="label-title">
+
+        Password Voucher
+
+    </label>
+
+    <input
+        type="text"
+        name="password"
+        value="{{ voucher.password }}"
+        class="form-control"
+        required
+    >
+
+</div>
+
+            <!-- BUTTON -->
+            <button
+                type="submit"
+                class="btn btn-save w-100"
+                id="saveBtn">
+
+                <span id="btnText">
+
+                    <i class="bi bi-check-circle"></i>
+                    Simpan Perubahan
+
+                </span>
+
+                <div
+                    class="loading-spinner mx-auto"
+                    id="loadingSpinner">
+                </div>
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+document
+.getElementById('editForm')
+
+.addEventListener('submit', function(){
+
+    document
+    .getElementById('btnText')
+    .style.display = 'none';
+
+    document
+    .getElementById('loadingSpinner')
+    .style.display = 'block';
+});
+
+
+</script>
+
+</body>
+</html>

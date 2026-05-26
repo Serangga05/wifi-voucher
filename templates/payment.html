@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Pembayaran</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        body{
+
+            background:
+            linear-gradient(
+                135deg,
+                #f4f7ff,
+                #eef4ff
+            );
+
+            min-height:100vh;
+        }
+
+        /* NAVBAR */
+        .payment-navbar{
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #1d4ed8
+            );
+
+            padding:18px 0;
+
+            box-shadow:
+            0 10px 30px rgba(37,99,235,0.15);
+        }
+
+        .navbar-brand{
+
+            font-size:32px;
+            font-weight:800;
+            color:white !important;
+        }
+
+        /* PAYMENT CARD */
+        .payment-wrapper{
+
+            padding-top:80px;
+            padding-bottom:80px;
+        }
+
+        .payment-card{
+
+            background:white;
+
+            border-radius:32px;
+
+            overflow:hidden;
+
+            box-shadow:
+            0 20px 50px rgba(0,0,0,0.08);
+
+            border:none;
+        }
+
+        .payment-header{
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            color:white;
+
+            padding:45px;
+
+            text-align:center;
+        }
+
+        .payment-header-icon{
+
+            width:90px;
+            height:90px;
+
+            border-radius:50%;
+
+            background:rgba(255,255,255,0.15);
+
+            display:flex;
+
+            align-items:center;
+            justify-content:center;
+
+            margin:auto;
+            margin-bottom:20px;
+
+            font-size:40px;
+        }
+
+        .payment-body{
+
+            padding:45px;
+        }
+
+        .invoice-box{
+
+            background:#f8fbff;
+
+            border-radius:20px;
+
+            padding:22px;
+
+            margin-bottom:20px;
+
+            border:
+            1px solid #e5e7eb;
+
+            transition:0.3s;
+        }
+
+        .invoice-box:hover{
+
+            transform:translateY(-3px);
+
+            box-shadow:
+            0 12px 25px rgba(37,99,235,0.08);
+        }
+
+        .invoice-label{
+
+            color:#6b7280;
+
+            font-size:14px;
+
+            margin-bottom:8px;
+        }
+
+        .invoice-value{
+
+            font-size:28px;
+
+            font-weight:700;
+
+            color:#111827;
+        }
+
+        .price-box{
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            color:white;
+
+            border-radius:24px;
+
+            padding:30px;
+
+            text-align:center;
+
+            margin-top:10px;
+            margin-bottom:25px;
+
+            box-shadow:
+            0 15px 35px rgba(37,99,235,0.22);
+        }
+
+        .price-label{
+
+            opacity:0.9;
+
+            font-size:16px;
+        }
+
+        .price-value{
+
+            font-size:48px;
+
+            font-weight:800;
+
+            margin-top:10px;
+        }
+
+        .status-badge{
+
+            display:inline-flex;
+
+            align-items:center;
+
+            gap:10px;
+
+            background:
+            rgba(255,193,7,0.15);
+
+            color:#856404;
+
+            padding:14px 22px;
+
+            border-radius:14px;
+
+            font-weight:700;
+
+            margin-bottom:30px;
+        }
+
+        .pay-btn{
+
+            height:60px;
+
+            border:none;
+
+            border-radius:18px;
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            color:white;
+
+            font-size:18px;
+
+            font-weight:700;
+
+            transition:0.3s;
+        }
+
+        .pay-btn:hover{
+
+            transform:translateY(-3px);
+
+            color:white;
+
+            box-shadow:
+            0 15px 30px rgba(37,99,235,0.22);
+        }
+
+        .payment-note{
+
+            margin-top:25px;
+
+            background:#f8fbff;
+
+            border-radius:18px;
+
+            padding:20px;
+
+            color:#6b7280;
+
+            line-height:1.7;
+
+            border:
+            1px solid #e5e7eb;
+        }
+
+        @media(max-width:768px){
+
+            .payment-body{
+
+                padding:30px 20px;
+            }
+
+            .price-value{
+
+                font-size:36px;
+            }
+
+            .navbar-brand{
+
+                font-size:26px;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark payment-navbar">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="/">
+
+            <i class="fa-solid fa-wifi"></i>
+            WiFi Voucher
+
+        </a>
+
+        <a href="/"
+           class="btn btn-light">
+
+            <i class="fa-solid fa-house"></i>
+            Home
+
+        </a>
+
+    </div>
+
+</nav>
+
+<!-- PAYMENT -->
+<section class="payment-wrapper">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-7">
+
+                <div class="payment-card">
+
+                    <!-- HEADER -->
+                    <div class="payment-header">
+
+                        <div class="payment-header-icon">
+
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+
+                        </div>
+
+                        <h1 class="fw-bold">
+
+                            Invoice Pembayaran
+
+                        </h1>
+
+                        <p class="mb-0 opacity-75">
+
+                            Selesaikan pembayaran untuk mendapatkan voucher hotspot.
+
+                        </p>
+
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="payment-body">
+
+                        <!-- PACKAGE -->
+                        <div class="invoice-box">
+
+                            <div class="invoice-label">
+
+                                Package
+
+                            </div>
+
+                            <div class="invoice-value">
+
+                                {{ package.name }}
+
+                            </div>
+
+                        </div>
+
+                        <!-- DURASI -->
+                        <div class="invoice-box">
+
+                            <div class="invoice-label">
+
+                                Durasi
+
+                            </div>
+
+                            <div class="invoice-value">
+
+                                {{ package.duration }}
+
+                            </div>
+
+                        </div>
+
+                        <!-- PRICE -->
+                        <div class="price-box">
+
+                            <div class="price-label">
+
+                                Total Pembayaran
+
+                            </div>
+
+                            <div class="price-value">
+
+                                Rp {{ "{:,}".format(package.price) }}
+
+                            </div>
+
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="text-center">
+
+                            <div class="status-badge">
+
+                                <i class="fa-solid fa-hourglass-half"></i>
+
+                                MENUNGGU PEMBAYARAN
+
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTON -->
+                        <div class="d-grid">
+
+                            <button
+                                id="pay-button"
+                                class="pay-btn">
+
+                                <i class="fa-solid fa-credit-card"></i>
+                                Bayar Sekarang
+
+                            </button>
+
+                        </div>
+
+                        <!-- NOTE -->
+                        <div class="payment-note">
+
+                            <i class="fa-solid fa-circle-info"></i>
+
+                            Setelah pembayaran berhasil,
+                            voucher hotspot akan otomatis
+                            aktif dan langsung tersedia
+                            di dashboard Anda.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- MIDTRANS -->
+<script
+    src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="{{ client_key }}">
+</script>
+
+<script>
+
+document.getElementById('pay-button')
+.addEventListener('click', function () {
+
+    snap.pay('{{ snap_token }}', {
+
+        onSuccess: function(result){
+
+            alert(
+                "Pembayaran berhasil. " +
+                "Silakan tunggu beberapa detik."
+            );
+
+            window.location.href =
+            "/dashboard";
+        },
+
+        onPending: function(result){
+
+            alert(
+                "Menunggu pembayaran"
+            );
+        },
+
+        onError: function(result){
+
+            alert(
+                "Pembayaran gagal"
+            );
+        },
+
+        onClose: function(){
+
+            alert(
+                "Anda menutup popup pembayaran"
+            );
+        }
+    });
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        *{
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body{
+
+            background:
+            linear-gradient(
+                rgba(255,255,255,0.88),
+                rgba(255,255,255,0.88)
+            ),
+
+            url('https://images.unsplash.com/photo-1520869562399-e772f042f422?q=80&w=1920&auto=format&fit=crop');
+
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+
+            min-height: 100vh;
+        }
+
+        .navbar-custom{
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            padding: 18px 0;
+
+            box-shadow:
+            0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .navbar-brand{
+
+            font-size: 34px;
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .dashboard-wrapper{
+
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+
+        .dashboard-card{
+
+            background: rgba(255,255,255,0.88);
+
+            backdrop-filter: blur(12px);
+
+            border-radius: 30px;
+
+            padding: 50px;
+
+            box-shadow:
+            0 20px 60px rgba(0,0,0,0.12);
+
+            border:
+            1px solid rgba(255,255,255,0.4);
+
+            animation:
+            fadeUp 0.5s ease;
+        }
+
+        @keyframes fadeUp{
+
+            from{
+
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to{
+
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard-title{
+
+            font-size: 42px;
+            font-weight: 700;
+
+            margin-bottom: 45px;
+
+            color: #111827;
+        }
+
+        .voucher-box{
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 28px;
+
+            box-shadow:
+            0 8px 25px rgba(0,0,0,0.06);
+
+            transition: 0.3s;
+        }
+
+        .voucher-box:hover{
+
+            transform: translateY(-4px);
+
+            box-shadow:
+            0 15px 35px rgba(37,99,235,0.15);
+        }
+
+        .voucher-label{
+
+            color: #6b7280;
+
+            font-size: 15px;
+            font-weight: 500;
+
+            margin-bottom: 12px;
+        }
+
+        .voucher-value{
+
+            font-size: 32px;
+            font-weight: 700;
+
+            color: #111827;
+
+            word-break: break-word;
+        }
+
+        .time-card{
+
+            background:
+            linear-gradient(
+                135deg,
+                #10b981,
+                #059669
+            );
+
+            color: white;
+
+            border-radius: 24px;
+
+            padding: 30px;
+
+            margin-top: 35px;
+
+            box-shadow:
+            0 12px 30px rgba(16,185,129,0.25);
+        }
+
+        .time-card h5{
+
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .time-value{
+
+            font-size: 36px;
+            font-weight: 700;
+
+            margin-top: 10px;
+        }
+
+        .empty-icon{
+
+            font-size: 90px;
+
+            color: #9ca3af;
+
+            margin-bottom: 25px;
+        }
+
+        .empty-title{
+
+            font-size: 42px;
+            font-weight: 700;
+
+            color: #111827;
+        }
+
+        .empty-text{
+
+            color: #6b7280;
+
+            font-size: 18px;
+
+            margin-top: 15px;
+        }
+
+        .btn-home{
+
+            background: white;
+            border: none;
+
+            padding: 10px 22px;
+
+            border-radius: 14px;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+        .btn-home:hover{
+
+            transform: translateY(-2px);
+        }
+
+        .btn-logout{
+
+            background: #ef4444;
+            border: none;
+
+            color: white;
+
+            padding: 10px 22px;
+
+            border-radius: 14px;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover{
+
+            background: #dc2626;
+
+            transform: translateY(-2px);
+
+            color: white;
+        }
+
+        @media(max-width:768px){
+
+            .dashboard-card{
+
+                padding: 30px 20px;
+            }
+
+            .dashboard-title{
+
+                font-size: 30px;
+            }
+
+            .voucher-value{
+
+                font-size: 24px;
+            }
+
+            .time-value{
+
+                font-size: 28px;
+            }
+
+            .navbar-brand{
+
+                font-size: 26px;
+            }
+        }
+        .copy-btn{
+
+    border: none;
+
+    border-radius: 14px;
+
+    padding: 10px 18px;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.copy-btn:hover{
+
+    transform: translateY(-2px);
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,0.15);
+}
+
+    </style>
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="/">
+
+            <i class="bi bi-wifi"></i>
+            WiFi Voucher
+
+        </a>
+
+        <div class="d-flex gap-2">
+
+            <a href="/"
+               class="btn btn-home">
+
+                <i class="bi bi-house-fill"></i>
+                Home
+
+            </a>
+
+            <a href="/logout"
+               class="btn btn-logout">
+
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- DASHBOARD -->
+<div class="container dashboard-wrapper">
+
+{% if active_voucher %}
+
+    <div class="dashboard-card">
+
+        <h1 class="dashboard-title">
+
+            <i class="bi bi-patch-check-fill text-success"></i>
+            Voucher Aktif
+
+        </h1>
+
+        <!-- USERNAME -->
+<div class="voucher-box mb-4">
+
+    <div class="voucher-label">
+
+        Username Voucher
+
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+        <div class="voucher-value"
+             id="usernameText">
+
+            {{ active_voucher.username }}
+
+        </div>
+
+        <button
+            class="btn btn-primary copy-btn"
+            onclick="copyText('usernameText')">
+
+            <i class="bi bi-copy"></i>
+            Copy
+
+        </button>
+
+    </div>
+
+</div>
+
+        <!-- PASSWORD -->
+<div class="voucher-box">
+
+    <div class="voucher-label">
+
+        Password Voucher
+
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+        <div class="voucher-value"
+             id="passwordText">
+
+            {{ active_voucher.password }}
+
+        </div>
+
+        <button
+            class="btn btn-primary copy-btn"
+            onclick="copyText('passwordText')">
+
+            <i class="bi bi-copy"></i>
+            Copy
+
+        </button>
+
+    </div>
+
+</div>
+
+        <!-- TIME -->
+        <div class="time-card text-center">
+
+            <h5>
+
+                <i class="bi bi-clock-history"></i>
+                Sisa Waktu Voucher
+
+            </h5>
+
+            <div class="time-value">
+
+                {{ active_voucher.remaining_time }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% else %}
+
+<div class="empty-voucher-wrapper">
+
+    <div class="empty-voucher-card">
+
+        <div class="empty-icon">
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+        </div>
+
+        <h2 class="empty-title">
+
+            Sedang Mengecek Voucher...
+
+        </h2>
+
+        <p class="empty-subtitle">
+
+            Pembayaran Anda sedang diproses.
+            Voucher akan muncul otomatis.
+
+        </p>
+
+        <div class="loading-bar">
+
+            <div class="loading-fill"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+setTimeout(function(){
+
+    window.location.reload();
+
+}, 2000);
+
+</script>
+
+{% endif %}
+
+</div>
+<script>
+
+function copyText(elementId){
+
+    const text = document
+    .getElementById(elementId)
+    .innerText;
+
+    navigator.clipboard.writeText(text);
+
+    alert("Berhasil dicopy!");
+}
+
+</script>
+</body>
+</html>

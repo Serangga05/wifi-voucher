@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>WiFi Voucher</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        *{
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+
+            background:#f1f5f9;
+
+            overflow-x:hidden;
+        }
+
+        /* NAVBAR */
+        .navbar-custom{
+
+            background:white;
+
+            padding:18px 0;
+
+            box-shadow:
+            0 4px 25px rgba(0,0,0,0.06);
+        }
+
+        .navbar-brand{
+
+            font-size:32px;
+
+            font-weight:800;
+
+            color:#2563eb !important;
+        }
+
+        .nav-btn{
+
+            border-radius:14px;
+
+            padding:10px 22px;
+
+            font-weight:600;
+
+            transition:0.3s;
+        }
+
+        .nav-btn:hover{
+
+            transform:translateY(-2px);
+        }
+
+        /* HERO */
+        .hero-section{
+
+            padding-top:90px;
+            padding-bottom:90px;
+        }
+
+        .hero-badge{
+
+            display:inline-block;
+
+            background:#dbeafe;
+
+            color:#2563eb;
+
+            padding:10px 20px;
+
+            border-radius:30px;
+
+            font-weight:600;
+
+            margin-bottom:25px;
+        }
+
+        .hero-title{
+
+            font-size:72px;
+
+            font-weight:800;
+
+            line-height:1.1;
+
+            color:#0f172a;
+        }
+
+        .hero-highlight{
+
+            color:#2563eb;
+        }
+
+        .hero-subtitle{
+
+            font-size:20px;
+
+            color:#64748b;
+
+            margin-top:25px;
+
+            max-width:650px;
+        }
+
+        .hero-btn{
+
+            margin-top:40px;
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            border:none;
+
+            color:white;
+
+            padding:18px 36px;
+
+            border-radius:18px;
+
+            font-size:18px;
+
+            font-weight:700;
+
+            transition:0.3s;
+        }
+
+        .hero-btn:hover{
+
+            transform:translateY(-4px);
+
+            color:white;
+
+            box-shadow:
+            0 15px 35px rgba(37,99,235,0.28);
+        }
+
+        /* USER WELCOME */
+        .welcome-box{
+
+            margin-top:30px;
+
+            background:white;
+
+            border-radius:24px;
+
+            padding:25px;
+
+            box-shadow:
+            0 15px 35px rgba(0,0,0,0.06);
+
+            border:
+            1px solid rgba(255,255,255,0.5);
+        }
+
+        .welcome-name{
+
+            color:#2563eb;
+
+            font-weight:700;
+        }
+
+        /* HERO IMAGE */
+        .hero-image{
+
+            width:100%;
+
+            animation:
+            floatImage 4s ease-in-out infinite;
+        }
+
+        @keyframes floatImage{
+
+            0%{
+                transform:translateY(0);
+            }
+
+            50%{
+                transform:translateY(-15px);
+            }
+
+            100%{
+                transform:translateY(0);
+            }
+        }
+
+        /* SECTION */
+        .section-title{
+
+            font-size:50px;
+
+            font-weight:800;
+
+            color:#0f172a;
+        }
+
+        .section-sub{
+
+            color:#64748b;
+
+            font-size:18px;
+        }
+
+        /* LOCATION CARD */
+        .location-card{
+
+            background:white;
+
+            border:none;
+
+            border-radius:30px;
+
+            overflow:hidden;
+
+            transition:0.35s;
+
+            box-shadow:
+            0 15px 35px rgba(0,0,0,0.06);
+        }
+
+        .location-card:hover{
+
+            transform:translateY(-10px);
+
+            box-shadow:
+            0 20px 45px rgba(37,99,235,0.14);
+        }
+
+        .location-top{
+
+            height:8px;
+
+            background:
+            linear-gradient(
+                90deg,
+                #2563eb,
+                #3b82f6
+            );
+        }
+
+        .location-icon{
+
+            width:90px;
+            height:90px;
+
+            border-radius:24px;
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            display:flex;
+
+            align-items:center;
+            justify-content:center;
+
+            color:white;
+
+            font-size:40px;
+
+            margin:auto;
+            margin-bottom:25px;
+
+            box-shadow:
+            0 12px 30px rgba(37,99,235,0.25);
+        }
+
+        .location-title{
+
+            font-size:30px;
+
+            font-weight:700;
+
+            color:#0f172a;
+        }
+
+        .location-text{
+
+            color:#64748b;
+
+            margin-top:15px;
+
+            min-height:50px;
+        }
+
+        .location-btn{
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            border:none;
+
+            border-radius:16px;
+
+            padding:14px;
+
+            font-weight:700;
+
+            color:white;
+
+            transition:0.3s;
+        }
+
+        .location-btn:hover{
+
+            transform:translateY(-3px);
+
+            color:white;
+
+            box-shadow:
+            0 12px 30px rgba(37,99,235,0.25);
+        }
+
+        /* FEATURES */
+        .feature-card{
+
+            background:white;
+
+            border-radius:28px;
+
+            padding:35px;
+
+            text-align:center;
+
+            box-shadow:
+            0 15px 35px rgba(0,0,0,0.05);
+
+            transition:0.3s;
+        }
+
+        .feature-card:hover{
+
+            transform:translateY(-8px);
+        }
+
+        .feature-icon{
+
+            width:90px;
+            height:90px;
+
+            border-radius:24px;
+
+            display:flex;
+
+            align-items:center;
+            justify-content:center;
+
+            margin:auto;
+            margin-bottom:25px;
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6
+            );
+
+            color:white;
+
+            font-size:38px;
+        }
+
+        /* FOOTER */
+        .footer{
+
+            margin-top:100px;
+
+            background:#0f172a;
+
+            color:white;
+
+            padding:70px 0;
+        }
+
+        .footer-title{
+
+            font-size:32px;
+
+            font-weight:700;
+        }
+
+        .footer-text{
+
+            color:#94a3b8;
+
+            margin-top:20px;
+        }
+
+        /* LOADING */
+        .loading-overlay{
+
+            position:fixed;
+
+            top:0;
+            left:0;
+
+            width:100%;
+            height:100%;
+
+            background:white;
+
+            z-index:999999;
+
+            display:flex;
+
+            justify-content:center;
+            align-items:center;
+        }
+
+        .spinner{
+
+            width:70px;
+            height:70px;
+
+            border:8px solid #e5e7eb;
+
+            border-top:8px solid #2563eb;
+
+            border-radius:50%;
+
+            animation:
+            spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+
+            100%{
+                transform:rotate(360deg);
+            }
+        }
+
+        @media(max-width:768px){
+
+            .hero-title{
+
+                font-size:48px;
+            }
+
+            .section-title{
+
+                font-size:36px;
+            }
+
+            .navbar-brand{
+
+                font-size:26px;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay"
+     id="loading-screen">
+
+    <div class="spinner"></div>
+
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="/">
+
+            <i class="bi bi-wifi"></i>
+            WiFi Voucher
+
+        </a>
+
+        <div class="d-flex gap-2">
+
+            {% if user_name %}
+
+                <a href="/dashboard"
+                   class="btn btn-primary nav-btn">
+
+                    Dashboard
+
+                </a>
+
+                <a href="/logout"
+                   class="btn btn-danger nav-btn">
+
+                    Logout
+
+                </a>
+
+            {% else %}
+
+                <a href="/login"
+                   class="btn btn-outline-primary nav-btn">
+
+                    Login
+
+                </a>
+
+                <a href="/register"
+                   class="btn btn-primary nav-btn">
+
+                    Register
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <!-- LEFT -->
+            <div class="col-lg-6 mb-5">
+
+                <div class="hero-badge">
+
+                    <i class="bi bi-lightning-charge-fill"></i>
+                    Internet Cepat & Modern
+
+                </div>
+
+                <h1 class="hero-title">
+
+                    Voucher Hotspot
+                    <span class="hero-highlight">
+
+                        Premium
+
+                    </span>
+
+                </h1>
+
+                <p class="hero-subtitle">
+
+                    Sistem pembelian voucher hotspot otomatis,
+                    modern, cepat, aman, dan profesional.
+
+                </p>
+
+                {% if user_name %}
+
+                <div class="welcome-box">
+
+                    <h4 class="fw-bold">
+
+                        👋 Selamat Datang,
+                        <span class="welcome-name">
+
+                            {{ user_name }}
+
+                        </span>
+
+                    </h4>
+
+                    <p class="text-muted mb-0">
+
+                        Silakan pilih lokasi hotspot
+                        yang ingin Anda gunakan.
+
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+                <a href="#locations"
+                   class="btn hero-btn">
+
+                    Mulai Sekarang
+
+                </a>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="col-lg-6">
+
+               <img
+    src="https://cdn-icons-png.flaticon.com/512/1183/1183657.png"
+    class="hero-image"
+>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FEATURES -->
+<section class="pb-5">
+
+    <div class="container">
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-lightning-charge-fill"></i>
+
+                    </div>
+
+                    <h4 class="fw-bold">
+
+                        Cepat
+
+                    </h4>
+
+                    <p class="text-muted">
+
+                        Voucher langsung aktif
+                        setelah pembayaran berhasil.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-shield-check"></i>
+
+                    </div>
+
+                    <h4 class="fw-bold">
+
+                        Aman
+
+                    </h4>
+
+                    <p class="text-muted">
+
+                        Sistem pembayaran modern
+                        menggunakan Midtrans.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-router-fill"></i>
+
+                    </div>
+
+                    <h4 class="fw-bold">
+
+                        Stabil
+
+                    </h4>
+
+                    <p class="text-muted">
+
+                        Koneksi internet cepat
+                        dan stabil di berbagai lokasi.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- LOKASI -->
+<section class="py-5"
+         id="locations">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <h2 class="section-title">
+
+                Pilih Lokasi Hotspot
+
+            </h2>
+
+            <p class="section-sub">
+
+                Pilih lokasi hotspot terdekat Anda.
+
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            {% for location in locations %}
+
+            <div class="col-lg-4 col-md-6">
+
+                <div class="location-card h-100">
+
+                    <div class="location-top"></div>
+
+                    <div class="card-body p-5 text-center">
+
+                        <!-- ICON -->
+                        <div class="location-icon">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                        </div>
+
+                        <!-- TITLE -->
+                        <div class="location-title">
+
+                            {{ location.name }}
+
+                        </div>
+
+                        <!-- TEXT -->
+                        <div class="location-text">
+
+                            Voucher hotspot tersedia
+                            di lokasi ini.
+
+                        </div>
+
+                        <!-- BUTTON -->
+                        <a href="/location/{{ location._id }}"
+                           class="btn location-btn mt-4 w-100">
+
+                            Lihat Package
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="footer text-center">
+
+    <div class="container">
+
+        <div class="footer-title">
+
+            WiFi Voucher System
+
+        </div>
+
+        <div class="footer-text">
+
+            Sistem penjualan voucher hotspot otomatis,
+            modern, dan profesional.
+
+        </div>
+
+        <div class="mt-4 text-secondary">
+
+            © 2026 WiFi Voucher.
+            All Rights Reserved.
+
+        </div>
+
+    </div>
+
+</footer>
+
+<script>
+
+window.addEventListener('load', function(){
+
+    document
+    .getElementById('loading-screen')
+    .style.display = 'none';
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Voucher Sold</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+<body class="voucher-page-body">
+
+<!-- LOADING -->
+<div class="loading-overlay"
+     id="loading-screen">
+
+    <div class="spinner"></div>
+
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark premium-navbar">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold"
+           href="/admin/dashboard">
+
+            <i class="fa-solid fa-wifi"></i>
+            Admin Panel
+
+        </a>
+
+        <div class="d-flex gap-2">
+
+            <a href="/admin/dashboard"
+               class="btn btn-light nav-btn">
+
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- PAGE -->
+<section class="voucher-page-section">
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="voucher-page-header">
+
+            <div>
+
+                <h1 class="voucher-page-title">
+
+                    <i class="fa-solid fa-circle-xmark text-danger"></i>
+
+                    Voucher Sold
+
+                </h1>
+
+                <p class="voucher-page-subtitle">
+
+                    Semua voucher yang sudah berhasil terjual.
+
+                </p>
+
+            </div>
+
+            <div class="voucher-count-box">
+
+                <span class="count-label">
+
+                    Total Voucher Sold
+
+                </span>
+
+                <span class="count-value text-danger">
+
+                    {{ vouchers|length }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- SEARCH -->
+        <div class="search-card mb-5">
+
+            <form method="GET">
+
+                <div class="row align-items-center">
+
+                    <div class="col-lg-10 mb-3 mb-lg-0">
+
+                        <div class="search-input-group">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="text"
+                                name="search"
+                                value="{{ search }}"
+                                placeholder="Cari username voucher..."
+                                class="form-control"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-custom w-100 search-btn">
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- VOUCHERS -->
+        <div class="row">
+
+            {% for voucher in vouchers %}
+
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="voucher-card sold-card h-100">
+
+                    <!-- TOP -->
+                    <div class="voucher-top">
+
+                        <div class="voucher-icon sold-icon">
+
+                            <i class="fa-solid fa-ticket"></i>
+
+                        </div>
+
+                        <span class="badge bg-danger ready-badge">
+
+                            SOLD
+
+                        </span>
+
+                    </div>
+
+                    <!-- USERNAME -->
+                    <div class="voucher-box">
+
+                        <small class="voucher-label">
+
+                            Username
+
+                        </small>
+
+                        <div class="voucher-value-row">
+
+                            <h4 class="voucher-value"
+                                id="user{{ loop.index }}">
+
+                                {{ voucher.username }}
+
+                            </h4>
+
+                            <button
+                                class="copy-btn"
+
+                                onclick="copyText(
+                                    'user{{ loop.index }}'
+                                )">
+
+                                <i class="fa-solid fa-copy"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="voucher-box">
+
+                        <small class="voucher-label">
+
+                            Password
+
+                        </small>
+
+                        <div class="voucher-value-row">
+
+                            <h4 class="voucher-value"
+                                id="pass{{ loop.index }}">
+
+                                {{ voucher.password }}
+
+                            </h4>
+
+                            <button
+                                class="copy-btn"
+
+                                onclick="copyText(
+                                    'pass{{ loop.index }}'
+                                )">
+
+                                <i class="fa-solid fa-copy"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- PACKAGE -->
+                    <div class="voucher-package mb-3">
+
+                        <div class="package-icon">
+
+                            <i class="fa-solid fa-box"></i>
+
+                        </div>
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Package
+
+                            </small>
+
+                            <h6 class="mb-0 fw-bold">
+
+                                {{ voucher.package.name }}
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                    <!-- PEMBELI -->
+                    {% if voucher.owner %}
+
+                    <div class="voucher-package">
+
+                        <div class="package-icon user-icon">
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Pembeli
+
+                            </small>
+
+                            <h6 class="mb-0 fw-bold">
+
+                                {{ voucher.owner.name }}
+
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+window.addEventListener('load', function(){
+
+    document
+    .getElementById('loading-screen')
+    .style.display = 'none';
+
+});
+
+function copyText(elementId){
+
+    const text =
+    document.getElementById(elementId)
+    .innerText;
+
+    navigator.clipboard.writeText(text);
+
+    alert("Berhasil dicopy!");
+}
+
+</script>
+
+</body>
+</html>
