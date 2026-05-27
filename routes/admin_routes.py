@@ -791,6 +791,7 @@ def add_package():
         return redirect('/admin/login')
 
     success_message = None
+    error_message = None
 
     delete_message = request.args.get('delete')
 
@@ -827,7 +828,7 @@ def add_package():
 
         if existing_package:
 
-            success_message = "Package sudah ada"
+            error_message = "Package sudah ada"
 
         else:
 
@@ -908,6 +909,8 @@ def add_package():
 
     success_message=success_message,
 
+    error_message=error_message,
+
     delete_message=delete_message,
 
     edit_message=edit_message,
@@ -945,6 +948,7 @@ def add_voucher():
         return redirect('/admin/login')
 
     success_message = None
+    error_message = None
 
     delete_message = request.args.get('delete')
 
@@ -981,7 +985,7 @@ def add_voucher():
 
         if existing_voucher:
 
-            success_message = "Username voucher sudah ada"
+            error_message = "Username voucher sudah ada"
 
         else:
 
@@ -1070,6 +1074,8 @@ def add_voucher():
     vouchers=vouchers,
 
     success_message=success_message,
+
+    error_message=error_message,
 
     delete_message=delete_message,
 

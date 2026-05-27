@@ -627,6 +627,25 @@ Swal.fire({
 
 {% endif %}
 
+{% if error_message %}
+
+<script>
+
+Swal.fire({
+
+    icon:'error',
+
+    title:'Gagal',
+
+    text:'{{ error_message }}',
+
+    confirmButtonColor:'#dc3545'
+});
+
+</script>
+
+{% endif %}
+
 <!-- DELETE -->
 {% if delete_message %}
 
