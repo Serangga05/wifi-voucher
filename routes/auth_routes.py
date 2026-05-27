@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session
+from flask import Blueprint, render_template, request, redirect, session, flash
 from database import users_collection
 import bcrypt
 
@@ -23,7 +23,8 @@ def register():
         })
 
         if existing_user:
-            return "Nama atau WhatsApp sudah digunakan"
+            flash("Nama atau WhatsApp sudah digunakan", "danger")
+            return redirect('/register')
 
         # hash password
         hashed_password = bcrypt.hashpw(
