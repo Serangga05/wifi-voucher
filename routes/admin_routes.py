@@ -671,6 +671,7 @@ def add_location():
         return redirect('/admin/login')
 
     success_message = None
+    error_message = None
 
     delete_message = request.args.get('delete')
 
@@ -693,7 +694,7 @@ def add_location():
 
         if existing_location:
 
-            success_message = "Lokasi sudah ada"
+            error_message = "Lokasi sudah ada"
 
         else:
 
@@ -717,6 +718,8 @@ def add_location():
         locations=locations,
 
         success_message=success_message,
+
+        error_message=error_message,
 
         delete_message=delete_message,
 
