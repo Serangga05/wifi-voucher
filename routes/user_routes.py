@@ -185,122 +185,102 @@ def dashboard():
     if 'user_id' not in session:
         return redirect('/login')
 
-    # ambil transaksi terakhir yang PAID
-    transaction = transactions_collection.find_one(
+    # ambil semua transaksi PAID
+    transactions = list(
 
-        {
+        transactions_collection.find({
+
             "user_id": session['user_id'],
 
             "payment_status": "PAID"
-        },
-
-        sort=[("purchase_time", -1)]
+        })
     )
 
-    active_voucher = None
+    active_vouchers = []
 
-    if transaction:
+    for transaction in transactions:
 
         purchase_time = transaction.get(
             'purchase_time'
         )
 
-        if purchase_time:
+        if not purchase_time:
+            continue
 
-            voucher = vouchers_collection.find_one({
+        # ambil voucher
+        voucher = vouchers_collection.find_one({
 
-                "_id": ObjectId(
-                    transaction['voucher_id']
-                )
-            })
+            "_id": ObjectId(
+                transaction['voucher_id']
+            )
+        })
 
-            package = packages_collection.find_one({
+        if not voucher:
+            continue
 
-                "_id": ObjectId(
-                    transaction['package_id']
-                )
-            })
+        # ambil package
+        package = packages_collection.find_one({
 
-            # =========================
-            # JIKA PACKAGE TIDAK DITEMUKAN
-            # =========================
+            "_id": ObjectId(
+                transaction['package_id']
+            )
+        })
 
-            if not package:
+        if not package:
+            continue
 
-                active_voucher = {
+        # ambil durasi
+        duration_text = package['duration']
 
-                    "username": voucher['username'],
+        duration_value = int(
+            duration_text.split()[0]
+        )
 
-                    "password": voucher['password'],
+        # hitung expire
+        if 'menit' in duration_text.lower():
 
-                    "remaining_time": "Package sudah dihapus"
-                }
-
-                return render_template(
-
-                    'dashboard.html',
-
-                    user_name=session['user_name'],
-
-                    active_voucher=active_voucher
-                )
-
-            # =========================
-            # AMBIL DURASI
-            # =========================
-
-            duration_text = package['duration']
-
-            duration_value = int(
-                duration_text.split()[0]
+            expire_time = purchase_time + timedelta(
+                minutes=duration_value
             )
 
-            # cek satuan
-            if 'menit' in duration_text.lower():
+        elif 'jam' in duration_text.lower():
 
-                expire_time = purchase_time + timedelta(
-                    minutes=duration_value
-                )
+            expire_time = purchase_time + timedelta(
+                hours=duration_value
+            )
 
-            elif 'jam' in duration_text.lower():
+        else:
 
-                expire_time = purchase_time + timedelta(
-                    hours=duration_value
-                )
+            expire_time = purchase_time + timedelta(
+                hours=duration_value
+            )
 
-            else:
+        now = datetime.utcnow() + timedelta(hours=8)
 
-                # default jam
-                expire_time = purchase_time + timedelta(
-                    hours=duration_value
-                )
+        # cek masih aktif
+        if now < expire_time:
 
-            # voucher masih aktif
-            if datetime.utcnow() + timedelta(hours=8) < expire_time:
+            remaining_time = expire_time - now
 
-                remaining_time = expire_time - (
-                    datetime.utcnow() + timedelta(hours=8)
-                )
+            remaining_hours = (
+                remaining_time.seconds // 3600
+            )
 
-                remaining_hours = (
-                    remaining_time.seconds // 3600
-                )
+            remaining_minutes = (
+                (remaining_time.seconds % 3600) // 60
+            )
 
-                remaining_minutes = (
-                    (remaining_time.seconds % 3600) // 60
-                )
+            active_vouchers.append({
 
-                active_voucher = {
+                "username": voucher['username'],
 
-                    "username": voucher['username'],
+                "password": voucher['password'],
 
-                    "password": voucher['password'],
+                "remaining_time":
 
-                    "remaining_time":
-
-                    f"{remaining_hours} jam "
-                    f"{remaining_minutes} menit"
-                }
+                f"{remaining_hours} jam "
+                f"{remaining_minutes} menit"
+            })
 
     return render_template(
 
@@ -308,9 +288,8 @@ def dashboard():
 
         user_name=session['user_name'],
 
-        active_voucher=active_voucher
+        active_vouchers=active_vouchers
     )
-
 
 # =========================
 # MIDTRANS CALLBACK
@@ -446,4 +425,3 @@ def midtrans_callback():
 
         "message": "callback received"
     })
-

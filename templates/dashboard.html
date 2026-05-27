@@ -368,78 +368,74 @@
 <!-- DASHBOARD -->
 <div class="container dashboard-wrapper">
 
-{% if active_voucher %}
+{% if active_vouchers %}
 
-    <div class="dashboard-card">
+<div class="dashboard-card">
 
-        <h1 class="dashboard-title">
+    <h1 class="dashboard-title">
 
-            <i class="bi bi-patch-check-fill text-success"></i>
-            Voucher Aktif
+        <i class="bi bi-patch-check-fill text-success"></i>
+        Voucher Aktif
 
-        </h1>
+    </h1>
+
+    {% for voucher in active_vouchers %}
+
+    <div class="voucher-box mb-5">
 
         <!-- USERNAME -->
-<div class="voucher-box mb-4">
+        <div class="voucher-label">
 
-    <div class="voucher-label">
-
-        Username Voucher
-
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-        <div class="voucher-value"
-             id="usernameText">
-
-            {{ active_voucher.username }}
+            Username Voucher
 
         </div>
 
-        <button
-            class="btn btn-primary copy-btn"
-            onclick="copyText('usernameText')">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
-            <i class="bi bi-copy"></i>
-            Copy
+            <div class="voucher-value"
+                 id="usernameText{{ loop.index }}">
 
-        </button>
+                {{ voucher.username }}
 
-    </div>
+            </div>
 
-</div>
+            <button
+                class="btn btn-primary copy-btn"
+                onclick="copyText('usernameText{{ loop.index }}')">
+
+                <i class="bi bi-copy"></i>
+                Copy
+
+            </button>
+
+        </div>
 
         <!-- PASSWORD -->
-<div class="voucher-box">
+        <div class="voucher-label">
 
-    <div class="voucher-label">
-
-        Password Voucher
-
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-        <div class="voucher-value"
-             id="passwordText">
-
-            {{ active_voucher.password }}
+            Password Voucher
 
         </div>
 
-        <button
-            class="btn btn-primary copy-btn"
-            onclick="copyText('passwordText')">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-            <i class="bi bi-copy"></i>
-            Copy
+            <div class="voucher-value"
+                 id="passwordText{{ loop.index }}">
 
-        </button>
+                {{ voucher.password }}
 
-    </div>
+            </div>
 
-</div>
+            <button
+                class="btn btn-primary copy-btn"
+                onclick="copyText('passwordText{{ loop.index }}')">
+
+                <i class="bi bi-copy"></i>
+                Copy
+
+            </button>
+
+        </div>
 
         <!-- TIME -->
         <div class="time-card text-center">
@@ -453,13 +449,17 @@
 
             <div class="time-value">
 
-                {{ active_voucher.remaining_time }}
+                {{ voucher.remaining_time }}
 
             </div>
 
         </div>
 
     </div>
+
+    {% endfor %}
+
+</div>
 
 {% else %}
 
