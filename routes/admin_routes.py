@@ -680,14 +680,31 @@ def add_location():
 
         location_name = request.form['location_name']
 
-        locations_collection.insert_one({
+        # cek lokasi sudah ada atau belum
+        existing_location = locations_collection.find_one({
 
-            "name": location_name,
+            "name": {
 
-            "active": True
+                "$regex": f"^{location_name}$",
+
+                "$options": "i"
+            }
         })
 
-        success_message = "Lokasi berhasil ditambahkan"
+        if existing_location:
+
+            success_message = "Lokasi sudah ada"
+
+        else:
+
+            locations_collection.insert_one({
+
+                "name": location_name,
+
+                "active": True
+            })
+
+            success_message = "Lokasi berhasil ditambahkan"
 
     locations = list(
         locations_collection.find()
@@ -790,20 +807,41 @@ def add_package():
 
         price = request.form['price']
 
-        packages_collection.insert_one({
+        # cek package duplicate
+        existing_package = packages_collection.find_one({
 
             "location_id": location_id,
 
-            "name": package_name,
+            "name": {
 
-            "duration": duration,
+                "$regex": f"^{package_name}$",
 
-            "price": int(price),
+                "$options": "i"
+            },
 
-            "active": True
+            "duration": duration
         })
 
-        success_message = "Package berhasil ditambahkan"
+        if existing_package:
+
+            success_message = "Package sudah ada"
+
+        else:
+
+            packages_collection.insert_one({
+
+                "location_id": location_id,
+
+                "name": package_name,
+
+                "duration": duration,
+
+                "price": int(price),
+
+                "active": True
+            })
+
+            success_message = "Package berhasil ditambahkan"
 
     # =========================
     # PAGINATION
@@ -927,24 +965,41 @@ def add_voucher():
 
         password = request.form['password']
 
-        vouchers_collection.insert_one({
+        # cek voucher duplicate
+        existing_voucher = vouchers_collection.find_one({
 
-            "location_id": location_id,
+            "username": {
 
-            "package_id": package_id,
+                "$regex": f"^{username}$",
 
-            "username": username,
-
-            "password": password,
-
-            "used": False,
-
-            "owner_id": None,
-
-            "transaction_id": None
+                "$options": "i"
+            }
         })
 
-        success_message = "Voucher berhasil ditambahkan"
+        if existing_voucher:
+
+            success_message = "Username voucher sudah ada"
+
+        else:
+
+            vouchers_collection.insert_one({
+
+                "location_id": location_id,
+
+                "package_id": package_id,
+
+                "username": username,
+
+                "password": password,
+
+                "used": False,
+
+                "owner_id": None,
+
+                "transaction_id": None
+            })
+
+            success_message = "Voucher berhasil ditambahkan"
 
     # =========================
     # PAGINATION
