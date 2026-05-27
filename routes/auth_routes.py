@@ -14,13 +14,16 @@ def register():
         whatsapp = request.form['whatsapp']
         password = request.form['password']
 
-        # cek nomor sudah ada atau belum
+        # cek nama atau whatsapp sudah digunakan
         existing_user = users_collection.find_one({
-            "whatsapp": whatsapp
+            "$or": [
+                {"name": name},
+                {"whatsapp": whatsapp}
+            ]
         })
 
         if existing_user:
-            return "Nomor WhatsApp sudah digunakan"
+            return "Nama atau WhatsApp sudah digunakan"
 
         # hash password
         hashed_password = bcrypt.hashpw(
