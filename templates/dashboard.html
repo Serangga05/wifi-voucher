@@ -382,6 +382,23 @@
     {% for voucher in active_vouchers %}
 
     <div class="voucher-box mb-5">
+        <div class="mb-4">
+
+            <span class="badge bg-primary px-3 py-2 me-2">
+
+                <i class="bi bi-geo-alt-fill"></i>
+                {{ voucher.location_name }}
+
+            </span>
+
+            <span class="badge bg-success px-3 py-2">
+
+                <i class="bi bi-wifi"></i>
+                {{ voucher.package_name }}
+
+            </span>
+
+        </div>
 
         <!-- USERNAME -->
         <div class="voucher-label">

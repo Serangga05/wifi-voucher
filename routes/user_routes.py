@@ -268,7 +268,31 @@ def dashboard():
                 (remaining_time.seconds % 3600) // 60
             )
 
+            # ambil package
+            package = packages_collection.find_one({
+                "_id": ObjectId(transaction['package_id'])
+            })
+
+            location_name = "-"
+
+            package_name = "-"
+
+            if package:
+
+                package_name = package['name']
+
+                location = locations_collection.find_one({
+                    "_id": ObjectId(package['location_id'])
+                })
+
+                if location:
+                    location_name = location['name']
+
             active_vouchers.append({
+
+                "location_name": location_name,
+
+                "package_name": package_name,
 
                 "username": voucher['username'],
 
