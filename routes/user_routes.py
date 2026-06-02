@@ -218,44 +218,42 @@ def dashboard():
         if not voucher:
             continue
 
-        # ambil package
-        package = packages_collection.find_one({
-
-            "_id": ObjectId(
-                transaction['package_id']
-            )
-        })
-
-        if not package:
-            continue
-
-        # ambil durasi
-        duration_text = package['duration']
-
-        duration_value = int(
-            duration_text.split()[0]
+                # ambil expire time dari transaksi
+        expire_time = transaction.get(
+            'expire_time'
         )
 
-        # hitung expire
-        if 'menit' in duration_text.lower():
-
-            expire_time = purchase_time + timedelta(
-                minutes=duration_value
-            )
-
-        elif 'jam' in duration_text.lower():
-
-            expire_time = purchase_time + timedelta(
-                hours=duration_value
-            )
-
-        else:
-
-            expire_time = purchase_time + timedelta(
-                hours=duration_value
-            )
+        if not expire_time:
+            continue
 
         now = datetime.utcnow() + timedelta(hours=8)
+
+        # jika voucher sudah expired
+        if now >= expire_time:
+
+            vouchers_collection.update_one(
+
+                {"_id": voucher['_id']},
+
+                {
+                    "$set": {
+                        "is_expired": True
+                    }
+                }
+            )
+
+            transactions_collection.update_one(
+
+                {"_id": transaction['_id']},
+
+                {
+                    "$set": {
+                        "is_expired": True
+                    }
+                }
+            )
+
+            continue
 
         # cek masih aktif
         if now < expire_time:
@@ -432,7 +430,7 @@ def midtrans_callback():
         # update transaksi
         transactions_collection.update_one(
 
-    {"order_id": order_id},
+            {"order_id": order_id},
 
             {
                 "$set": {
@@ -441,7 +439,9 @@ def midtrans_callback():
 
                     "voucher_id": str(voucher['_id']),
 
-                    "purchase_time": datetime.utcnow() + timedelta(hours=8)
+                    "purchase_time": purchase_time,
+
+                    "expire_time": expire_time
                 }
             }
         )
