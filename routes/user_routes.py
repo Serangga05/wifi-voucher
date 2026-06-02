@@ -376,7 +376,36 @@ def midtrans_callback():
 
                 "message": "voucher habis"
             })
+        
+        # ambil package untuk hitung waktu expired
+        package = packages_collection.find_one({
+            "_id": ObjectId(transaction['package_id'])
+        })
 
+        purchase_time = datetime.utcnow() + timedelta(hours=8)
+
+        duration_text = package['duration']
+        duration_value = int(duration_text.split()[0])
+
+        if 'menit' in duration_text.lower():
+
+            expire_time = purchase_time + timedelta(
+                minutes=duration_value
+            )
+
+        elif 'jam' in duration_text.lower():
+
+            expire_time = purchase_time + timedelta(
+                hours=duration_value
+            )
+
+        else:
+
+            expire_time = purchase_time + timedelta(
+                hours=duration_value
+            )
+
+        # update voucher
         # update voucher
         vouchers_collection.update_one(
 
@@ -389,7 +418,13 @@ def midtrans_callback():
 
                     "owner_id": transaction['user_id'],
 
-                    "transaction_id": order_id
+                    "transaction_id": order_id,
+
+                    "purchase_time": purchase_time,
+
+                    "expire_time": expire_time,
+
+                    "is_expired": False
                 }
             }
         )

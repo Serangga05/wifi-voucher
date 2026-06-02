@@ -12,10 +12,6 @@ CLIENT_KEY = os.getenv(
     "MIDTRANS_CLIENT_KEY"
 )
 
-# DEBUG
-print("SERVER KEY :", SERVER_KEY)
-print("CLIENT KEY :", CLIENT_KEY)
-
 snap = midtransclient.Snap(
 
     is_production=False,
