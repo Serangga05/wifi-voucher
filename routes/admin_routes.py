@@ -98,11 +98,25 @@ def admin_dashboard():
     })
 
     # =========================
-    # VOUCHER SOLD
+    # VOUCHER SOLD AKTIF
     # =========================
     total_voucher_sold = vouchers_collection.count_documents({
 
-        "used": True
+        "used": True,
+
+        "is_expired": {
+            "$ne": True
+        }
+    })
+
+    # =========================
+    # VOUCHER EXPIRED
+    # =========================
+    total_voucher_expired = vouchers_collection.count_documents({
+
+        "used": True,
+
+        "is_expired": True
     })
 
     # =========================
@@ -229,6 +243,8 @@ def admin_dashboard():
         total_voucher_ready=total_voucher_ready,
 
         total_voucher_sold=total_voucher_sold,
+
+        total_voucher_expired=total_voucher_expired,
 
         chart_labels=chart_labels,
 
@@ -602,8 +618,12 @@ def voucher_sold():
 
     query = {
 
-        "used": True
+    "used": True,
+
+    "is_expired": {
+        "$ne": True
     }
+}
 
     # =========================
     # SEARCH USERNAME
