@@ -8,6 +8,7 @@ from flask import (
 )
 
 from bson.objectid import ObjectId
+from pymongo import ReturnDocument
 
 from datetime import (
     datetime,
@@ -66,14 +67,17 @@ def location_detail(location_id):
         })
     )
 
-    # hitung stok voucher
     for package in packages:
 
         stock = vouchers_collection.count_documents({
 
             "package_id": str(package['_id']),
 
-            "used": False
+            "used": False,
+
+            "reserved": {
+                "$ne": True
+            }
         })
 
         package['stock'] = stock
@@ -84,36 +88,57 @@ def location_detail(location_id):
         packages=packages
     )
 
-
 # =========================
 # BELI VOUCHER
 # =========================
 @user.route('/buy/<package_id>')
 def buy_voucher(package_id):
 
-    # wajib login
     if 'user_id' not in session:
         return redirect('/login')
 
-    # cek voucher tersedia
-    available_voucher = vouchers_collection.find_one({
-
-        "package_id": package_id,
-
-        "used": False
-    })
-
-    if not available_voucher:
-        return "Voucher habis"
-
-    # ambil package
     package = packages_collection.find_one({
-
         "_id": ObjectId(package_id)
     })
 
-    # buat transaksi
+    if not package:
+        return "Package tidak ditemukan"
+
     transaction_id = f"ORDER-{uuid.uuid4()}"
+
+    now = datetime.utcnow() + timedelta(hours=8)
+
+    # reserve voucher secara aman
+    reserved_voucher = vouchers_collection.find_one_and_update(
+
+        {
+            "package_id": package_id,
+
+            "used": False,
+
+            "reserved": {
+                "$ne": True
+            }
+        },
+
+        {
+            "$set": {
+
+                "reserved": True,
+
+                "reserved_by": session['user_id'],
+
+                "reserved_order_id": transaction_id,
+
+                "reserved_at": now
+            }
+        },
+
+        return_document=ReturnDocument.AFTER
+    )
+
+    if not reserved_voucher:
+        return "Voucher habis"
 
     transaction = {
 
@@ -123,22 +148,16 @@ def buy_voucher(package_id):
 
         "package_id": package_id,
 
+        "voucher_id": str(reserved_voucher['_id']),
+
         "amount": package['price'],
 
         "payment_status": "UNPAID",
 
-        "created_at": datetime.utcnow() + timedelta(hours=8)
+        "created_at": now
     }
 
-    result = transactions_collection.insert_one(
-        transaction
-    )
-
-    
-
-    # =========================
-    # MIDTRANS
-    # =========================
+    transactions_collection.insert_one(transaction)
 
     transaction_data = {
 
@@ -155,7 +174,6 @@ def buy_voucher(package_id):
         }
     }
 
-    # generate snap token
     snap_token = snap.create_transaction_token(
         transaction_data
     )
@@ -174,7 +192,6 @@ def buy_voucher(package_id):
             "MIDTRANS_CLIENT_KEY"
         )
     )
-
 
 # =========================
 # DASHBOARD USER
@@ -343,10 +360,29 @@ def midtrans_callback():
     print("ORDER ID:", order_id)
     print("STATUS:", transaction_status)
 
+    transaction = transactions_collection.find_one({
+        "order_id": order_id
+    })
+
+    if not transaction:
+
+        print("TRANSACTION NOT FOUND")
+
+        return jsonify({
+            "message": "transaction not found"
+        })
+
+    if transaction.get('payment_status') == 'PAID':
+
+        print("SUDAH PERNAH PAID")
+
+        return jsonify({
+            "message": "already paid"
+        })
+
     # =========================
     # PAYMENT SUCCESS
     # =========================
-
     if (
         transaction_status == 'settlement'
         or
@@ -356,50 +392,18 @@ def midtrans_callback():
         )
     ):
 
-        transaction = transactions_collection.find_one({
-
-    "order_id": order_id
-})
-
-        if not transaction:
-
-            print("TRANSACTION NOT FOUND")
-
-            return jsonify({
-
-                "message": "transaction not found"
-            })
-
-        # cegah double callback
-        if transaction.get(
-            'payment_status'
-        ) == 'PAID':
-
-            print("SUDAH PERNAH PAID")
-
-            return jsonify({
-
-                "message": "already paid"
-            })
-
-        # cari voucher tersedia
         voucher = vouchers_collection.find_one({
-
-            "package_id": transaction['package_id'],
-
-            "used": False
+            "_id": ObjectId(transaction['voucher_id'])
         })
 
         if not voucher:
 
-            print("VOUCHER HABIS")
+            print("VOUCHER NOT FOUND")
 
             return jsonify({
-
-                "message": "voucher habis"
+                "message": "voucher not found"
             })
-        
-        # ambil package untuk hitung waktu expired
+
         package = packages_collection.find_one({
             "_id": ObjectId(transaction['package_id'])
         })
@@ -407,7 +411,10 @@ def midtrans_callback():
         purchase_time = datetime.utcnow() + timedelta(hours=8)
 
         duration_text = package['duration']
-        duration_value = int(duration_text.split()[0])
+
+        duration_value = int(
+            duration_text.split()[0]
+        )
 
         if 'menit' in duration_text.lower():
 
@@ -427,8 +434,6 @@ def midtrans_callback():
                 hours=duration_value
             )
 
-        # update voucher
-        # update voucher
         vouchers_collection.update_one(
 
             {"_id": voucher['_id']},
@@ -437,6 +442,8 @@ def midtrans_callback():
                 "$set": {
 
                     "used": True,
+
+                    "reserved": False,
 
                     "owner_id": transaction['user_id'],
 
@@ -447,11 +454,19 @@ def midtrans_callback():
                     "expire_time": expire_time,
 
                     "is_expired": False
+                },
+
+                "$unset": {
+
+                    "reserved_by": "",
+
+                    "reserved_order_id": "",
+
+                    "reserved_at": ""
                 }
             }
         )
 
-        # update transaksi
         transactions_collection.update_one(
 
             {"order_id": order_id},
@@ -460,8 +475,6 @@ def midtrans_callback():
                 "$set": {
 
                     "payment_status": "PAID",
-
-                    "voucher_id": str(voucher['_id']),
 
                     "purchase_time": purchase_time,
 
@@ -474,13 +487,62 @@ def midtrans_callback():
         print("PEMBAYARAN BERHASIL")
         print("========================\n")
 
+    # =========================
+    # PAYMENT FAILED / EXPIRED
+    # =========================
+    elif transaction_status in ['cancel', 'deny', 'expire']:
+
+        vouchers_collection.update_one(
+
+            {"_id": ObjectId(transaction['voucher_id'])},
+
+            {
+                "$set": {
+
+                    "reserved": False
+                },
+
+                "$unset": {
+
+                    "reserved_by": "",
+
+                    "reserved_order_id": "",
+
+                    "reserved_at": ""
+                }
+            }
+        )
+
+        transactions_collection.update_one(
+
+            {"order_id": order_id},
+
+            {
+                "$set": {
+
+                    "payment_status": "FAILED"
+                }
+            }
+        )
+
+        print("PEMBAYARAN GAGAL / EXPIRED")
+
     else:
 
-        print("\n========================")
-        print("PEMBAYARAN BELUM SUCCESS")
-        print("========================\n")
+        transactions_collection.update_one(
+
+            {"order_id": order_id},
+
+            {
+                "$set": {
+
+                    "payment_status": "PENDING"
+                }
+            }
+        )
+
+        print("PEMBAYARAN PENDING")
 
     return jsonify({
-
         "message": "callback received"
     })
