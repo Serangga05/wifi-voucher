@@ -91,6 +91,7 @@ def location_detail(location_id):
 # =========================
 # BELI VOUCHER
 # =========================
+print("VERSI RESERVE VOUCHER AKTIF")
 @user.route('/buy/<package_id>')
 def buy_voucher(package_id):
 
