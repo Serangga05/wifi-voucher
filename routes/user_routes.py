@@ -31,12 +31,63 @@ from database import (
 )
 
 user = Blueprint('user', __name__)
+def release_expired_reservations():
+
+    now = datetime.utcnow() + timedelta(hours=8)
+
+    expired_vouchers = vouchers_collection.find({
+
+        "reserved": True,
+
+        "used": False,
+
+        "reserved_until": {
+            "$lt": now
+        }
+    })
+
+    for voucher in expired_vouchers:
+
+        order_id = voucher.get("reserved_order_id")
+
+        vouchers_collection.update_one(
+
+            {"_id": voucher["_id"]},
+
+            {
+                "$set": {
+                    "reserved": False
+                },
+
+                "$unset": {
+                    "reserved_by": "",
+                    "reserved_order_id": "",
+                    "reserved_at": "",
+                    "reserved_until": ""
+                }
+            }
+        )
+
+        if order_id:
+
+            transactions_collection.update_one(
+
+                {"order_id": order_id},
+
+                {
+                    "$set": {
+                        "payment_status": "EXPIRED"
+                    }
+                }
+            )
 
 # =========================
 # HOME
 # =========================
 @user.route('/')
 def home():
+
+    release_expired_reservations()
 
     user_name = session.get('user_name')
 
@@ -56,6 +107,8 @@ def home():
 # =========================
 @user.route('/location/<location_id>')
 def location_detail(location_id):
+
+    release_expired_reservations()
 
     location = locations_collection.find_one({
         "_id": ObjectId(location_id)
@@ -91,9 +144,10 @@ def location_detail(location_id):
 # =========================
 # BELI VOUCHER
 # =========================
-print("VERSI RESERVE VOUCHER AKTIF")
 @user.route('/buy/<package_id>')
 def buy_voucher(package_id):
+
+    release_expired_reservations()
 
     if 'user_id' not in session:
         return redirect('/login')
