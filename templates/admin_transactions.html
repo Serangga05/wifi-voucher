@@ -289,17 +289,31 @@
                             {% if transaction.payment_status == "PAID" %}
 
                                 <span class="badge bg-success">
-
                                     PAID
+                                </span>
 
+                            {% elif transaction.payment_status == "PENDING" %}
+
+                                <span class="badge bg-primary">
+                                    PENDING
+                                </span>
+
+                            {% elif transaction.payment_status == "FAILED" %}
+
+                                <span class="badge bg-danger">
+                                    FAILED
+                                </span>
+
+                            {% elif transaction.payment_status == "EXPIRED" %}
+
+                                <span class="badge bg-secondary">
+                                    EXPIRED
                                 </span>
 
                             {% else %}
 
                                 <span class="badge bg-warning text-dark">
-
                                     UNPAID
-
                                 </span>
 
                             {% endif %}

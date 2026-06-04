@@ -94,7 +94,15 @@ def admin_dashboard():
     # =========================
     total_voucher_ready = vouchers_collection.count_documents({
 
-        "used": False
+        "used": False,
+
+        "$or": [
+
+            {"reserved": {"$exists": False}},
+
+            {"reserved": False}
+
+        ]
     })
 
     # =========================
@@ -553,7 +561,15 @@ def voucher_ready():
 
     query = {
 
-        "used": False
+        "used": False,
+
+        "$or": [
+
+            {"reserved": {"$exists": False}},
+
+            {"reserved": False}
+
+        ]
     }
 
     # =========================
