@@ -185,7 +185,9 @@ def buy_voucher(package_id):
 
                 "reserved_order_id": transaction_id,
 
-                "reserved_at": now
+                "reserved_at": now,
+
+                "reserved_until": now + timedelta(minutes=15)
             }
         },
 
@@ -517,7 +519,9 @@ def midtrans_callback():
 
                     "reserved_order_id": "",
 
-                    "reserved_at": ""
+                    "reserved_at": "",
+
+                    "reserved_until": ""
                 }
             }
         )
@@ -563,7 +567,9 @@ def midtrans_callback():
 
                     "reserved_order_id": "",
 
-                    "reserved_at": ""
+                    "reserved_at": "",
+
+                    "reserved_until": ""
                 }
             }
         )
