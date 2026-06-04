@@ -195,7 +195,7 @@ def buy_voucher(package_id):
     )
 
     if not reserved_voucher:
-        return "Voucher habis"
+        return render_template("voucher_unavailable.html")
 
     transaction = {
 
