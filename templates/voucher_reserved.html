@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Voucher Reserved</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+<body>
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+
+        <div>
+
+            <h1 class="fw-bold text-warning">
+
+                <i class="bi bi-lock-fill"></i>
+                Voucher Reserved
+
+            </h1>
+
+            <p class="text-muted mb-0">
+
+                Daftar voucher yang sedang dikunci pelanggan dan menunggu pembayaran.
+
+            </p>
+
+        </div>
+
+        <a href="/admin/dashboard"
+           class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Dashboard
+
+        </a>
+
+    </div>
+
+    {% if vouchers %}
+
+    <div class="row">
+
+        {% for voucher in vouchers %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+
+                        <div>
+
+                            <h4 class="fw-bold mb-1">
+
+                                {{ voucher.username }}
+
+                            </h4>
+
+                            <p class="text-muted mb-0">
+
+                                {{ voucher.password }}
+
+                            </p>
+
+                        </div>
+
+                        <span class="badge bg-warning text-dark">
+
+                            RESERVED
+
+                        </span>
+
+                    </div>
+
+                    <hr>
+
+                    <p class="mb-2">
+
+                        <strong>Package:</strong>
+
+                        {% if voucher.package %}
+                            {{ voucher.package.name }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </p>
+
+                    <p class="mb-2">
+
+                        <strong>Pembeli:</strong>
+
+                        {% if voucher.reserved_user %}
+                            {{ voucher.reserved_user.name }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </p>
+
+                    <p class="mb-2">
+
+                        <strong>WhatsApp:</strong>
+
+                        {% if voucher.reserved_user %}
+                            {{ voucher.reserved_user.whatsapp }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </p>
+
+                    <p class="mb-2">
+
+                        <strong>Reserved At:</strong><br>
+
+                        {% if voucher.reserved_at %}
+                            {{ voucher.reserved_at.strftime("%d/%m/%Y %H:%M") }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </p>
+
+                    <p class="mb-0">
+
+                        <strong>Reserved Until:</strong><br>
+
+                        {% if voucher.reserved_until %}
+                            {{ voucher.reserved_until.strftime("%d/%m/%Y %H:%M") }}
+                        {% else %}
+                            -
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body text-center p-5">
+
+            <i class="bi bi-unlock fs-1 text-muted"></i>
+
+            <h3 class="fw-bold mt-3">
+
+                Tidak Ada Voucher Reserved
+
+            </h3>
+
+            <p class="text-muted">
+
+                Saat ini tidak ada voucher yang sedang dikunci pelanggan.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

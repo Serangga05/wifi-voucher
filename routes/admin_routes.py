@@ -106,6 +106,16 @@ def admin_dashboard():
     })
 
     # =========================
+    # VOUCHER RESERVED
+    # =========================
+    total_voucher_reserved = vouchers_collection.count_documents({
+
+        "used": False,
+
+        "reserved": True
+    })
+
+    # =========================
     # VOUCHER SOLD AKTIF
     # =========================
     total_voucher_sold = vouchers_collection.count_documents({
@@ -249,6 +259,8 @@ def admin_dashboard():
         total_transactions=total_transactions,
 
         total_voucher_ready=total_voucher_ready,
+
+        total_voucher_reserved=total_voucher_reserved,
 
         total_voucher_sold=total_voucher_sold,
 
@@ -614,6 +626,63 @@ def voucher_ready():
 
         search=search
     )
+
+# =========================
+# VOUCHER RESERVED
+# =========================
+@admin.route('/admin/voucher-reserved')
+def voucher_reserved():
+
+    if not admin_required():
+        return redirect('/admin/login')
+
+    vouchers = list(
+
+        vouchers_collection.find({
+
+            "used": False,
+
+            "reserved": True
+        })
+
+    )
+
+    for voucher in vouchers:
+
+        package = packages_collection.find_one({
+
+            "_id": ObjectId(
+                voucher['package_id']
+            )
+        })
+
+        voucher['package'] = package
+
+        user = None
+
+        if voucher.get("reserved_by"):
+
+            try:
+
+                user = users_collection.find_one({
+
+                    "_id": ObjectId(
+                        voucher["reserved_by"]
+                    )
+                })
+
+            except:
+                pass
+
+        voucher['reserved_user'] = user
+
+    return render_template(
+
+        'voucher_reserved.html',
+
+        vouchers=vouchers
+    )
+
 
 # =========================
 # VOUCHER SOLD
