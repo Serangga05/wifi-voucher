@@ -21,6 +21,7 @@ from utils.midtrans import snap
 
 import os
 import uuid
+import hashlib
 
 
 from database import (
@@ -413,6 +414,33 @@ def midtrans_callback():
     fraud_status = data.get(
         'fraud_status'
     )
+
+    status_code = data.get('status_code')
+
+    gross_amount = data.get('gross_amount')
+
+    signature_key = data.get('signature_key')
+
+    server_key = os.getenv("MIDTRANS_SERVER_KEY").strip()
+
+    raw_signature = (
+        str(order_id) +
+        str(status_code) +
+        str(gross_amount) +
+        server_key
+    )
+
+    valid_signature = hashlib.sha512(
+        raw_signature.encode('utf-8')
+    ).hexdigest()
+
+    if signature_key != valid_signature:
+
+        print("INVALID SIGNATURE")
+
+        return jsonify({
+            "message": "invalid signature"
+        }), 403
 
     print("ORDER ID:", order_id)
     print("STATUS:", transaction_status)
